@@ -1,1 +1,2 @@
-web: gunicorn system_alert_bot:app
+web: gunicorn system_alert_bot.app:app
+
