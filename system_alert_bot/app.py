@@ -1,4 +1,3 @@
-# app.py
 from system_alert_bot import app
 
 if __name__ == "__main__":
