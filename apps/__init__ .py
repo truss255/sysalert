@@ -24,7 +24,7 @@ logger.addHandler(handler)
 logger.info("Application initialized.")
 
 # Import configurations
-from apps.config import Config  # Ensure it matches the new structure
+from apps.config import Config  # type: ignore # Ensure it matches the new structure
 app.config.from_object(Config)
 
 # Initialize Slack client
@@ -33,7 +33,7 @@ client = WebClient(token=app.config['SLACK_BOT_TOKEN'])
 logger.info("Slack client initialized.")
 
 # Initialize Google Sheets
-from apps.config import sheet  # Ensure correct import
+from apps.config import sheet  # type: ignore # Ensure correct import
 logger.info("Google Sheets initialized.")
 
 # Initialize scheduler
