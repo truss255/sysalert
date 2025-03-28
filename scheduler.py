@@ -1,8 +1,8 @@
 from flask import request, jsonify
 import logging
 from apps import app, client
-from apps.helpers import build_new_ticket_modal, update_ticket_status, send_direct_message
-from apps.config import sheet, weekly_counts_sheet, Config
+from apps.helpers import build_new_ticket_modal, update_ticket_status, send_direct_message # type: ignore
+from apps.config import sheet, weekly_counts_sheet, Config # type: ignore
 from datetime import datetime
 import pytz
 
@@ -130,11 +130,11 @@ def slack_events():
                 user_id = payload["user"]["id"]
 
                 # Generate a ticket ID
-                from apps.helpers import generate_ticket_id
+                from apps.helpers import generate_ticket_id # type: ignore
                 ticket_id = generate_ticket_id()
 
                 # Log the ticket to Google Sheets
-                from apps.config import sheet
+                from apps.config import sheet # type: ignore
                 from datetime import datetime
                 created_date = datetime.now().strftime("%m/%d/%Y")
                 ticket_data = [

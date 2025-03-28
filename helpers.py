@@ -1,5 +1,5 @@
 from . import sheet, logger, client
-from apps.config import Config
+from apps.config import Config # type: ignore
 
 
 def is_system_user(user_id):
