@@ -1,9 +1,22 @@
 import os
 import json
+import logging
 from slack_sdk import WebClient
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-from .app import logger
+
+# Configure logging (avoid circular import from .app)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+# Ensure logs directory exists
+if not os.path.exists("logs"):
+    os.makedirs("logs")
+
+handler = logging.FileHandler("logs/config.log")
+formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+handler.setFormatter(formatter)
+logger.addHandler(handler)
 
 class Config:
     PORT = int(os.environ.get("PORT", 8080))
@@ -18,23 +31,30 @@ class Config:
     if not SLACK_BOT_TOKEN:
         logger.error("SLACK_BOT_TOKEN environment variable is not set.")
         raise ValueError("SLACK_BOT_TOKEN environment variable is not set.")
+    
     if not GOOGLE_SHEETS_CREDENTIALS_STR:
         logger.error("GOOGLE_SHEETS_CREDENTIALS environment variable is not set.")
         raise ValueError("GOOGLE_SHEETS_CREDENTIALS environment variable is not set.")
+
     try:
         GOOGLE_SHEETS_CREDENTIALS = json.loads(GOOGLE_SHEETS_CREDENTIALS_STR)
     except json.JSONDecodeError as e:
         logger.error(f"Invalid JSON in GOOGLE_SHEETS_CREDENTIALS: {e}")
         raise ValueError(f"Invalid JSON in GOOGLE_SHEETS_CREDENTIALS: {e}")
+    
     if not GOOGLE_SHEET_ID:
         logger.error("GOOGLE_SHEET_ID environment variable is not set.")
         raise ValueError("GOOGLE_SHEET_ID environment variable is not set.")
 
-# Initialize Slack client
-client = WebClient(token=Config.SLACK_BOT_TOKEN)
-logger.info("Slack client initialized.")
+# ✅ Initialize Slack client
+try:
+    client = WebClient(token=Config.SLACK_BOT_TOKEN)
+    logger.info("Slack client initialized successfully.")
+except Exception as e:
+    logger.error(f"Failed to initialize Slack client: {e}")
+    raise
 
-# Initialize Google Sheets
+# ✅ Initialize Google Sheets
 try:
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
     creds = ServiceAccountCredentials.from_json_keyfile_dict(Config.GOOGLE_SHEETS_CREDENTIALS, scope)
@@ -42,7 +62,8 @@ try:
     spreadsheet = gc.open_by_key(Config.GOOGLE_SHEET_ID)
     sheet = spreadsheet.worksheet("TicketLog")
     weekly_counts_sheet = spreadsheet.worksheet("WeeklyCounts")
-    logger.info("Google Sheets initialized.")
+    logger.info("Google Sheets initialized successfully.")
 except Exception as e:
     logger.error(f"Failed to initialize Google Sheets: {e}")
     raise
+

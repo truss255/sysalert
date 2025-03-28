@@ -1,5 +1,6 @@
-from .app import sheet, logger, client
-from .config import Config
+from . import sheet, logger, client
+from apps.config import Config
+
 
 def is_system_user(user_id):
     logger.debug(f"Checking if user {user_id} is a system user")
@@ -102,7 +103,7 @@ def send_direct_message(user_id, message):
         client.chat_postMessage(channel=user_id, text=message)
         logger.info("Direct message sent successfully")
     except Exception as e:
-        logger.error(f"Error sending directла message: {e}")
+        logger.error(f"Error sending direct message: {e}")
 
 def build_new_ticket_modal():
     campaign_options = [

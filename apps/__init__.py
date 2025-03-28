@@ -1,4 +1,3 @@
-# system_alert_bot/__init__.py
 import os
 import logging
 from logging.handlers import RotatingFileHandler
@@ -25,7 +24,7 @@ logger.addHandler(handler)
 logger.info("Application initialized.")
 
 # Import configurations
-from .config import Config
+from apps.config import Config  # Ensure it matches the new structure
 app.config.from_object(Config)
 
 # Initialize Slack client
@@ -34,7 +33,7 @@ client = WebClient(token=app.config['SLACK_BOT_TOKEN'])
 logger.info("Slack client initialized.")
 
 # Initialize Google Sheets
-from .config import sheet
+from apps.config import sheet  # Ensure correct import
 logger.info("Google Sheets initialized.")
 
 # Initialize scheduler
@@ -44,7 +43,7 @@ atexit.register(lambda: scheduler.shutdown())
 logger.info("Scheduler tasks added.")
 
 # Import routes, helpers, and scheduler tasks
-from . import routes, helpers, scheduler
+from apps import routes, helpers, scheduler  # Ensure correct import
 
 def create_app():
     return app

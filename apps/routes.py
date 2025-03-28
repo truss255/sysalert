@@ -1,7 +1,7 @@
 from flask import request, jsonify
 import logging
-from __init__ import app, client
-from helpers import update_ticket_status, send_direct_message
+from apps import app, client
+from apps.helpers import build_new_ticket_modal, update_ticket_status, send_direct_message
 
 logger = logging.getLogger(__name__)
 
